@@ -20,7 +20,6 @@ return new class extends Migration
             $table->dateTime('start_promo');
             $table->dateTime('end_promo');
             $table->integer('new_price');
-            $table->boolean('active')->default(0);
         });
     }
 
