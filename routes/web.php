@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PromotionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth')->group(function () {
     Route::post('/games/{game}/purchase', [GameController::class, 'purchase'])->name('games.purchase');
+    Route::get('games/{game}/promote', [PromotionController::class, 'create'])->name('promotion.create');
+    Route::post('games/{game}/promote', [PromotionController::class, 'store'])->name('promotion.store');
     Route::resource('games', GameController::class)->only(['create', 'store']);
+
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

@@ -13,8 +13,7 @@
                         <img src="{{ url($game->image_path) }}" style="max-width: 200px">
                     </a>
                     <x-input-label for="name" value="{{ $game->name }}"/>
-
-                        @if ($game->hasPromotion->active && $game->hasPromotion->start_promo <= date('Y-m-d H:i:s'))
+                        @if ($game->hasPromotion->active && $game->hasPromotion->start_promo <= now())
                         <td>
                             Price :
                             <del><x-input-label for="name" value="{{ $game->price }}"/></del>
@@ -25,7 +24,6 @@
                             <x-input-label for="name" value="{{ $game->price }}"/>
                         </td>
                         @endif
-
                     <x-input-label for="name" value="{{ $game->release_date }}"/>
                     @if($game->release_date > now())
                         <x-primary-button disabled>Coming soon</x-primary-button>
@@ -38,6 +36,9 @@
                                 <x-primary-button>Buy</x-primary-button>
                             </div>
                         </form>
+                    @endif
+                    @if(Auth::check() && $game->owner_id == Auth::User()->id)
+                        <a href="{{route('promotion.create', $game->id)}}">Promote</a>
                     @endif
                 </div>
             </div>
