@@ -41,12 +41,7 @@ class GameController extends Controller
     public function store(Request $request)
     {
         $game = Game::create($request->all());
-
-        $name = $request->image_path->getClientOriginalName();
-        $destination = 'images/games/'.$game->id;
-        $request->image_path->move(public_path($destination), $name);
-
-        $game->image_path = $destination.'/'.$name;
+        $game->saveImage($request);
         $game->save();
 
         return redirect()->route('games.index');

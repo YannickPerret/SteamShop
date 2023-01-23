@@ -28,4 +28,13 @@ class Game extends Model
     {
         return $this->hasOne(Promotion::class);
     }
+
+    function saveImage ($request){
+
+        $name = $request->image_path->getClientOriginalName();
+        $destination = 'images/games/'.$this->id;
+        $request->image_path->move(public_path($destination), $name);
+
+        $this->image_path = $destination.'/'.$name;
+    }
 }
