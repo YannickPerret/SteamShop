@@ -13,7 +13,7 @@
                         <img src="{{ url($game->image_path) }}" style="max-width: 200px">
                     </a>
                     <x-input-label for="name" value="{{ $game->name }}"/>
-                        @if ($game->hasPromotion->active && $game->hasPromotion->start_promo <= now())
+                        @if ($game->hasPromotion->start_promo <= now())
                         <td>
                             Price :
                             <del><x-input-label for="name" value="{{ $game->price }}"/></del>

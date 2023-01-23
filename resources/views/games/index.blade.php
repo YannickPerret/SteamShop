@@ -27,7 +27,7 @@
                                 <td>
                                     <x-input-label for="name" value="{{ $game->name }}"/>
                                 </td>
-                                @if ($game->hasPromotion->active && $game->hasPromotion->start_promo <= now())
+                                @if ($game->hasPromotion->start_promo <= now())
                                 <td>
                                     <del><x-input-label for="name" value="{{ $game->price }}"/></del> - 
 
