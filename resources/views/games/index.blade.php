@@ -9,7 +9,7 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div>
-                    <table>
+                    <table>                        
                         @foreach($games as $game)
                             <tr>
                                 <td>
@@ -27,9 +27,17 @@
                                 <td>
                                     <x-input-label for="name" value="{{ $game->name }}"/>
                                 </td>
+                                @if ($game->hasPromotion->active && $game->hasPromotion->start_promo <= date('d-m-y h:i:s'))
+                                <td>
+                                    <del><x-input-label for="name" value="{{ $game->price }}"/></del> - 
+
+                                    <x-input-label for="name" value="{{ $game->hasPromotion->new_price }}"/>
+                                </td>
+                                @else
                                 <td>
                                     <x-input-label for="name" value="{{ $game->price }}"/>
                                 </td>
+                                @endif
                                 <td>
                                     <x-input-label for="name" value="{{ $game->release_date }}"/>
                                 </td>

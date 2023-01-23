@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('promotions', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('games_id')->constrained('games');
+            $table->foreignId('game_id')->constrained('games');
             $table->dateTime('start_promo');
             $table->dateTime('end_promo');
             $table->integer('new_price');

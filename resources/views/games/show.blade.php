@@ -13,7 +13,19 @@
                         <img src="{{ url($game->image_path) }}" style="max-width: 200px">
                     </a>
                     <x-input-label for="name" value="{{ $game->name }}"/>
-                    <x-input-label for="name" value="{{ $game->price }}"/>
+
+                        @if ($game->hasPromotion->active && $game->hasPromotion->start_promo <= date('Y-m-d H:i:s'))
+                        <td>
+                            Price :
+                            <del><x-input-label for="name" value="{{ $game->price }}"/></del>
+                            Promotion : <x-input-label for="name" value="{{ $game->hasPromotion->new_price }}"/>
+                        </td>
+                        @else
+                        <td>
+                            <x-input-label for="name" value="{{ $game->price }}"/>
+                        </td>
+                        @endif
+
                     <x-input-label for="name" value="{{ $game->release_date }}"/>
                     @if($game->release_date > now())
                         <x-primary-button disabled>Coming soon</x-primary-button>

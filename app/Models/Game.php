@@ -20,4 +20,8 @@ class Game extends Model
         }
         return false;
     }
+
+    function hasPromotion(){
+        return $this->hasOne(Promotion::class);
+    }
 }
