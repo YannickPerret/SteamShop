@@ -11,7 +11,10 @@ class Game extends Model
     function buyByUser(User $user)
     {
         if ($this->release_date < now() && !$user->hasGame($this) && $this->price <= $user->credits) {
-            $user->credits -= $this->price;
+            if ($this->hasPromotion)
+                $user->credits -= $this->price - $this->hasPromotion->new_price;
+            else
+                $user->credits -= $this->price;
             $user->save();
 
             Library::create(['user_id' => $user->id, 'game_id' => $this->id]);
@@ -21,7 +24,8 @@ class Game extends Model
         return false;
     }
 
-    function hasPromotion(){
+    function hasPromotion()
+    {
         return $this->hasOne(Promotion::class);
     }
 }

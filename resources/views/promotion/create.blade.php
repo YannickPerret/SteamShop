@@ -8,7 +8,11 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                @if ($game->hasPromotion)
+                    <p>Le jeu a déjà une promotion en cours
+                @endif
                 <h2>Promotion pour le jeu : {{$game->name}}</h2>
+
                 <form action="{{ route('promotion.store', $game->id) }}" method="POST">
                     @csrf
                     @method('POST')

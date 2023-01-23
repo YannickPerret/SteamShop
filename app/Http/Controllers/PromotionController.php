@@ -42,17 +42,15 @@ class PromotionController extends Controller
             'start_promo' => 'required',
             'end_promo' => 'required',
        ]);
-
-       if($promotion['start_promo'] >= now() && $promotion['end_promo'] >= now() && $promotion['end_promo'] >= $promotion['start_promo']){
+       //if($promotion['start_promo'] >= now() && $promotion['end_promo'] >= now() && $promotion['end_promo'] >= $promotion['start_promo']){
         if($promotion['new_price'] <= $game->price){
             $newPromo = new Promotion($promotion);
             $newPromo->game_id = $game->id;
 
             $newPromo->save();
         }
-        else
             return back()->with('message', 'Le prix en promotion est plus grand que le prix du jeu');
-       }
+      // }
        return back()->with('message', 'Merci de vérifier les dates de promotions');
     }
 

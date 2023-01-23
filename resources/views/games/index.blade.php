@@ -27,11 +27,10 @@
                                 <td>
                                     <x-input-label for="name" value="{{ $game->name }}"/>
                                 </td>
-                                @if ($game->hasPromotion->start_promo <= now())
+                                @if ($game->hasPromotion && $game->hasPromotion->start_promo <= date("Y-m-d H:i:s"))
                                 <td>
                                     <del><x-input-label for="name" value="{{ $game->price }}"/></del> - 
-
-                                    <x-input-label for="name" value="{{ $game->hasPromotion->new_price }}"/>
+                                    Promotion :<x-input-label for="name" value="{{ $game->price - $game->hasPromotion->new_price }}"/>
                                 </td>
                                 @else
                                 <td>

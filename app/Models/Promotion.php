@@ -9,6 +9,6 @@ class Promotion extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['game_id', 'start_promo', 'end_promo', 'new_price','active'];
+    protected $fillable = ['game_id', 'start_promo', 'end_promo', 'new_price'];
 
 }
