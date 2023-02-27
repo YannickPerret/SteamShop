@@ -10,7 +10,7 @@
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div>
                     <a href="{{ route('games.show', $game) }}">
-                        <img src="{{ url($game->image_path) }}" style="max-width: 200px">
+                        <img src="{{ route('games.show', $game) }}" style="max-width: 200px">
                     </a>
                     <x-input-label for="name" value="{{ $game->name }}"/>
 

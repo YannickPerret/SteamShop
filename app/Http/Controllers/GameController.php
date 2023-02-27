@@ -3,14 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Models\Game;
+use Aws\AwsClient;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 use Illuminate\View\View;
+use Aws\S3\S3Client;
+use Aws\Exception\AwsException;
+use Aws\S3\PostObjectV4;
+use Exception;
 
 class GameController extends Controller
 {
+    protected $client;
+
+    public function __construct()
+    {
+        $this->client = new S3Client([
+            'region' => env('AWS_DEFAULT_REGION'),
+            'version' => 'latest',
+            'credentials' => [
+                    'key' => env('AWS_ACCESS_KEY_ID'),
+                    'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            ]
+        ]);
+    }
+    
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +49,28 @@ class GameController extends Controller
      **/
     public function create()
     {
-        return view('games/create');
+        $bucket = env('AWS_BUCKET');
+        $key = 'games/images/' . \Str::random(40);
+        // Set some defaults for form input fields
+        $formInputs = ['acl' => 'private', 'key' => $key];
+
+        // Construct an array of conditions for policy
+        $options = [
+            ['acl' => 'private'],
+            ['bucket' => env('AWS_BUCKET')],
+            ['starts-with', '$key', $key],
+            ["starts-with", "Content-Type", ""],
+            //['eq', '$key', $key],
+        ];
+        // Optional: configure expiration time string
+        $expires = '+8 hours';
+
+        $postObject = new \Aws\S3\PostObjectV4($this->client,$bucket,$formInputs,$options,$expires);        
+
+        $formAttributes = $postObject->getFormAttributes();
+        $formInputs = $postObject->getFormInputs();
+
+        return view('games/create')->with(compact('formInputs', 'formAttributes'))->with("imageURL", $key);
     }
 
     /**
@@ -41,7 +83,6 @@ class GameController extends Controller
     public function store(Request $request)
     {
         $game = Game::create($request->all());
-        $game->saveImage($request);
         $game->save();
 
         return redirect()->route('games.index');
@@ -65,8 +106,12 @@ class GameController extends Controller
      *
      * @return View
      */
-    public function show(Game $game): View
+    public function show(Request $request, Game $game)
     {
+
+        if($request->prefers(['text', 'image']) == 'image') {
+            return redirect(Storage::disk('s3')->temporaryUrl($game->image_path, now()->addMinutes(2)));
+        }
         return view('games/show', compact('game'));
     }
 

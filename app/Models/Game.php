@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+
 
 class Game extends Model
 {
@@ -31,10 +33,14 @@ class Game extends Model
 
     function saveImage ($request){
 
-        $name = $request->image_path->getClientOriginalName();
-        $destination = 'images/games/'.$this->id;
-        $request->image_path->move(public_path($destination), $name);
+        //$name = $request->image_path->getClientOriginalName();
+        //$destination = 'images/games/'.$name;
 
-        $this->image_path = $destination.'/'.$name;
+        $this->image_path = $request->image_path->store('games', 's3');
+
+        # If you do not have S3 as your default:
+        //Storage::disk('s3')->put($destination, file_get_contents($request->image_path));
+        
+        //$this->image_path = $destination.'/'.$name;
     }
 }

@@ -9,9 +9,12 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                 <div class="max-w-xl">
-                    <form method="post" action="{{ route('games.store') }}" class="mt-12 space-y-12" enctype="multipart/form-data">
-                        @csrf
-                        @method('POST')
+                    <!-- postObject form -->
+
+                    <form id="create-game" method="{{ $formAttributes['method'] }}" action="{{ $formAttributes['action'] }}" class="mt-12 space-y-12" enctype="{{ $formAttributes['enctype'] }}">
+                        @foreach ($formInputs as $key => $value)
+                            <input type="hidden" name="{{ $key }}" value="{{ $value }}" required />
+                        @endforeach
 
                         <div>
                             <x-input-label for="name" value="{{ __('Name') }}"/>
@@ -31,8 +34,10 @@
                             <x-input-error class="mt-2" :messages="$errors->get('description')"/>
                         </div>
 
+
                         <div class="col-md-6">
-                            <x-text-input id="image_path" name="image_path" type="file" class="mt-1 block w-full" required/>
+                            <x-text-input name="image_path" type="file" class="mt-1 block w-full" required/>
+                            <x-text-input id="image_path" type="hidden" value="{{$imageURL}}"/>
                         </div>
 
                         <div>
@@ -44,9 +49,42 @@
                         <div class="flex items-center gap-4">
                             <x-primary-button>Save</x-primary-button>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>
     </div>
 </x-app-layout>
+<script>
+    document.querySelector("#create-game").addEventListener('submit', async () => {
+        event.preventDefault();
+        const formData = new FormData();
+        //put input in formData
+        event.target.querySelectorAll("input").forEach((input) => {
+            if (!input.name.includes("image_path")){
+                formData.append(input.name, input.value);
+            }
+        });
+        //put @csrf token in formData
+        formData.append("_token", "{{ csrf_token() }}");
+        //put input in formData
+        formData.append("image_path", document.getElementById("image_path").value);
+        //send request to presigned url
+
+        await fetch('{{route('games.store')}}', {
+            method: 'POST',
+            credentials: "same-origin", 
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+            },
+            body: formData, 
+        })
+        .then((response) => {
+            if (response.ok) {
+                document.querySelector("#image_path").remove();
+            }
+        })  // parse JSON from request
+        .catch((error) => {                        // catch
+            console.log('Request failed', error);
+        });
+    });
+</script>
